@@ -1,0 +1,130 @@
+@font-face {
+    font-family: 'book';
+    src: url(../font/FontsFree-Net-Maison-Neue-Book.ttf);
+}
+@font-face {
+    font-family: 'book-light';
+    src: url(../font/FontsFree-Net-Maison-Neue-Light.ttf);
+}
+* {
+    margin: 0;
+    box-sizing: border-box;
+}  
+html, body {
+    font-family: 'book-light', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+}
+header {
+    width: 100%;
+    padding: 20px;
+    background-color: #4a90e2;
+    color: white;
+    text-align: center;
+}
+.button {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+nav {
+    color: white;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+a {
+    text-decoration: none;
+    color: white;
+    font-family: 'book';
+    font-size: 20px;
+}
+.link-container {
+    display: flex;
+    gap: 25px;
+}
+.link::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: white;
+    transition: transform 0.3s ease-out;
+}
+.link {
+    display: inline-block;
+    position: relative;
+    
+}
+.link:hover::after {
+    transform: scaleX(0.99);
+}
+fieldset {
+    border: none;
+}
+.answers {
+    display: flex;  
+    align-items: center;
+    margin-top: 30px;
+    flex-direction: column;
+}
+.score {
+    width: 40%;
+    font-size: 24px;
+    border-top: 2px solid #4a90e2;
+    border-bottom: 2px solid #4a90e2;
+    text-align: center;
+}
+b {
+    color:#357ab8;
+}
+main {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    width: 100%;
+    height: 100%;
+}
+
+.quiz {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 30px;
+}
+
+fieldset {
+    border: none;
+}
+
+legend {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #4a90e2;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+}
+
+label {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 5px 0;
+    transition: background-color 0.3s;
+}
+form {
+    width: 80%;
+}
+.green {
+    background-color: #00560f;
+}

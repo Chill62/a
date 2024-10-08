@@ -12,25 +12,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (strlen($login) > 18 || strlen($haslo) > 18 || strlen($login) < 8 || strlen($haslo) < 8) {
             $error = "Your login and password must be below 18 characters and above 8 characters.";
         } else {            
-                $stmt = mysqli_prepare($conn , 'Select * FROM logowanie WHERE login = ? AND haslo = ?');        
-                mysqli_stmt_bind_param($stmt, "ss", $login , $haslo);
-                mysqli_stmt_execute($stmt);
-                $result = mysqli_stmt_get_result($stmt);
-                if(mysqli_num_rows($result))
-                {
-                    $user = mysqli_fetch_assoc($result);
+            $stmt = mysqli_prepare($conn, 'SELECT * FROM logowanie WHERE login = ?');
+            mysqli_stmt_bind_param($stmt, "s", $login);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            
+            if (mysqli_num_rows($result) > 0) {
+                $user = mysqli_fetch_assoc($result);
+                if (password_verify($haslo, $user['haslo'])) {
                     $_SESSION['user_login'] = $user['login'];
                     setcookie('user_login', $login, time() + (86400 * 30), "/");    
                     header('Location: main_site.php');
                     exit();
-                }else
-                {
-                    $error = "account doesn't exist";
+                } else {
+                    $error = "Incorrect password.";
                 }
+            } else {
+                $error = "Account doesn't exist.";
             }
+            
             mysqli_stmt_close($stmt);
         }
     }
+}
 mysqli_close($conn);
 ?>
 <!DOCTYPE html>

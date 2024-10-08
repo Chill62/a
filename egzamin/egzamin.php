@@ -1,6 +1,12 @@
 <?php
 session_start();
+
 $conn = mysqli_connect('localhost', 'root', '', 'egzamin');
+
+if (!isset($_COOKIE['user_login'])) {
+    header('Location: ../logowanie.php');
+    exit(); 
+}
 
 if (!isset($_SESSION['quiz'])) {
     $q = "SELECT pytania.id, pytania.zapytanie, pytania.poprawna_odpowiedz, odpowiedz.A, odpowiedz.B, odpowiedz.C, odpowiedz.D 
@@ -14,22 +20,28 @@ if (!isset($_SESSION['quiz'])) {
     while ($question = mysqli_fetch_array($result)) {
         $quiz[] = $question;
     }
+    $_SESSION['quiz'] = $quiz; 
 }
 
 if (isset($_POST['przycisk'])) {
     $score = 0; 
-    $quiz = $_SESSION['quiz'];
 
-    foreach ($quiz as $question) {
-        $questionId = $question['id']; 
+    foreach ($_SESSION['quiz'] as $question) {
         $correctAnswer = $question['poprawna_odpowiedz']; 
-
-        if (isset($_POST["question_$questionId"]) && $_POST["question_$questionId"] == $correctAnswer) {
+        if (isset($_POST["question_" . $question['id']]) && $_POST["question_" . $question['id']] == $correctAnswer) {
             $score++;
         }
-        
+    }
+    $score2 = $score * 4;
+    $stmt = mysqli_prepare($conn, 'INSERT INTO logowanie (wynik, data, godzina) VALUES (?, CURRENT_DATE, CURRENT_TIME)');
+    
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "i", $score2);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
     }
     header("Location: submit_quiz.php?score=$score");
+
     exit();
 }
 
@@ -57,15 +69,14 @@ mysqli_close($conn);
     <main>
         <form method="POST">
             <?php 
-            $questionId = $question['id'];
-            foreach ($_SESSION['quiz'] as $question): 
+            foreach ($_SESSION['quiz'] as $question):
+                $questionId = $question['id']; 
             ?>
             <div class="quiz">
                 <fieldset>
                     <legend><?php echo htmlspecialchars($question['zapytanie']); ?></legend>
                     <div class="options">
                         <label>
-                            <?php if(isset($_POST["question_$questionId"])) {echo $_POST["question_$questionId"];} ?>
                             <input type="radio" name="question_<?php echo $question['id']; ?>" value="A">
                             <?php echo htmlspecialchars($question['A']); ?>
                         </label>
@@ -86,9 +97,8 @@ mysqli_close($conn);
             </div>
             <?php endforeach; ?>    
             <div class="button">
-                <button type="submit" class="submit" name="przycisk">Sprawdź odpowiedzi</button>
+                <button type="submit" class="submit" name="przycisk">Sprawdź odpowiedzi</button><br>
             </div>
-            <div style="height: 250px;"></div>
         </form>
     </main>
 </body>

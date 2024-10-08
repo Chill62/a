@@ -4,7 +4,11 @@ $conn = mysqli_connect('localhost', 'root', '', 'egzamin');
 
 $quiz = $_SESSION['quiz'];
 $score = $_GET['score'];
+if (!isset($_COOKIE['user_login'])) {
 
+    header('Location: ../logowanie.php');
+    exit(); 
+}
 ?>
 
 <!DOCTYPE html>
@@ -37,38 +41,50 @@ $score = $_GET['score'];
         <main>
             <form method="POST">
                 <?php foreach ($quiz as $question):    
-                    $_SESSION["question_$question[id]"] = $question['id'];
                     $questionId = $question['id'];
                     $correctAnswer = $question['poprawna_odpowiedz'];
                 ?>
-                <div class="quiz" >
+                <div class="quiz">
                     <fieldset>
                         <legend><?php echo htmlspecialchars($question['zapytanie']); ?></legend>
+                        
                         <div class="options">
-                            <label class="<?php if("question_$questionId" == $correctAnswer) { echo "green";}else {echo "red";}  ?>">
+                            <label 
                                 <?php 
-                                if(isset($_POST["question_$questionId"]))?>
-                                <input type="hidden" name="question_<?php echo $questionId; ?>" value="A">
+                                if ($correctAnswer == 'A') {
+                                    echo 'class="green"';
+                                } else { echo 'class="red"';}
+                                ?>>
                                 <?php echo htmlspecialchars($question['A']); ?>
                             </label>
-                            <label class="<?php if("question_$questionId" == $correctAnswer) { echo "green";}else {echo "red";}  ?>">
-                                <input type="hidden" name="question_<?php echo $questionId; ?>" value="B">
+                            <label 
+                                <?php 
+                                if ($correctAnswer == 'B') {
+                                    echo 'class="green"';
+                                } else { echo 'class="red"';}
+                                ?>>
                                 <?php echo htmlspecialchars($question['B']); ?>
                             </label>
-                            <label class="<?php if("question_$questionId" == $correctAnswer) { echo "green";}else {echo "red";}  ?>">
-                                <input type="hidden" name="question_<?php echo $questionId; ?>" value="C">
+                            <label 
+                                <?php 
+                                if ($correctAnswer == 'C') {
+                                    echo 'class="green"';
+                                } else { echo 'class="red"';} 
+                                ?>>
                                 <?php echo htmlspecialchars($question['C']); ?>
                             </label>
-                            <label class="<?php if("question_$questionId" == $correctAnswer) { echo "green";}else {echo "red";}  ?>">
-                                <input type="hidden" name="question_<?php echo $questionId; ?>" value="D">
+                            <label 
+                                <?php 
+                                if ($correctAnswer == 'D') {
+                                    echo 'class="green"';
+                                } else { echo 'class="red"';} 
+                                ?>>
                                 <?php echo htmlspecialchars($question['D']); ?>
                             </label>
                         </div>
                     </fieldset>
                 </div>
-                <?php endforeach; 
-
-                ?>
+                <?php endforeach; ?>
             </form>
         </main>
     </div>

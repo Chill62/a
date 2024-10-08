@@ -3,10 +3,10 @@ session_start();
 
 $conn = mysqli_connect('localhost','root','','egzamin');
 
-while(!isset($_SESSION['user_login']) && !isset($_COOKIE['user_login']))
-{
+if (!isset($_COOKIE['user_login'])) {
+
     header('Location: logowanie.php');
-    exit();
+    exit(); 
 }
 ?>
 <!DOCTYPE html>

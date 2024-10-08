@@ -1,7 +1,7 @@
 <?php 
 $conn = mysqli_connect('localhost', 'root', '', 'egzamin');
 
-// Redirect if not logged in
+
 if (!isset($_COOKIE['user_login'])) {
     header('Location: ../logowanie.php');
     exit(); 

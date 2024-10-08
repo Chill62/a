@@ -24,11 +24,14 @@ if (!isset($_SESSION['quiz'])) {
 }
 if (isset($_POST['przycisk'])) {
     $score = 0; 
-
+    $right = 0;
     foreach ($_SESSION['quiz'] as $question) {
         $correctAnswer = $question['poprawna_odpowiedz']; 
         if (isset($_POST["question_" . $question['id']]) && $_POST["question_" . $question['id']] == $correctAnswer) {
             $score++;
+            $sql = "UPDATE pytania SET poprawnosc = poprawnosc + 1 WHERE id = " . $question['id'] ;
+            mysqli_query($conn , $sql);
+            
         }
     }
     $score2 = $score * 4;

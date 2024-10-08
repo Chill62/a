@@ -1,0 +1,86 @@
+@font-face {
+    font-family: 'book';
+    src: url(../font/FontsFree-Net-Maison-Neue-Book.ttf);
+}
+@font-face {
+    font-family: 'book-light';
+    src: url(../font/FontsFree-Net-Maison-Neue-Light.ttf);
+}
+* {
+margin: 0;
+padding: 0;
+}  
+html {
+    height: 100%;
+    width: 100%;
+}
+body {
+    height: 100%;
+    width: 100%;
+}
+header {
+    width: 100%;
+    padding: 20px;
+    background-color: #4a90e2;
+    color: white;
+    text-align: center;
+}
+.link-container1 {
+    display: flex;
+    gap: 25px;
+}
+.link1::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: white;
+    transition: transform 0.3s ease-out;
+}
+.link1 {
+    display: inline-block;
+    position: relative;
+    
+}
+.link1:hover::after {
+    transform: scaleX(0.99);
+}
+nav {
+    color: white;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+a {
+    text-decoration: none;
+    color: white !important;
+    text-decoration: none !important;
+    font-family: 'book';
+    font-size: 20px;
+}
+.thead-dark {
+    background-color: rgb(74, 144, 226);
+}
+table {
+    width: 50% !important;
+}
+th[scope="col"] {
+    background-color: rgb(33, 37, 41) !important;
+    border-bottom-color: rgb(50, 56, 62) !important;
+    border-bottom-style: solid !important;
+    border-bottom-width: 2px !important; 
+    border-left-color: rgb(50, 56, 62) !important;
+    border-right-color: rgb(50, 56, 62) !important;
+    border-top-color: rgb(50, 56, 62) !important;
+    color: white !important;
+}
+.main {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -22,18 +22,27 @@ if (!isset($_SESSION['quiz'])) {
     }
     $_SESSION['quiz'] = $quiz; 
 }
+
 if (isset($_POST['przycisk'])) {
     $score = 0; 
     $right = 0;
+    
     foreach ($_SESSION['quiz'] as $question) {
         $correctAnswer = $question['poprawna_odpowiedz']; 
-        if (isset($_POST["question_" . $question['id']]) && $_POST["question_" . $question['id']] == $correctAnswer) {
-            $score++;
-            $sql = "UPDATE pytania SET poprawnosc = poprawnosc + 1 WHERE id = " . $question['id'] ;
-            mysqli_query($conn , $sql);
-            
+        $questionId = $question['id'];
+        
+        if (isset($_POST["question_" . $questionId])) {
+            $totalUpdateSql = "UPDATE pytania SET total = total + 1 WHERE id = $questionId";
+            mysqli_query($conn, $totalUpdateSql);
+
+            if ($_POST["question_" . $questionId] == $correctAnswer) {
+                $score++;
+                $sql = "UPDATE pytania SET poprawnosc = poprawnosc + 1 WHERE id = $questionId";
+                mysqli_query($conn, $sql);
+            }
         }
     }
+    
     $score2 = $score * 4;
     $userLogin = $_COOKIE['user_login'];
     $stmt = mysqli_prepare($conn, 'INSERT INTO ranking (wynik, data, godzina, user_login) VALUES (?, CURRENT_DATE, CURRENT_TIME, ?)');
@@ -43,8 +52,8 @@ if (isset($_POST['przycisk'])) {
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     }
+    
     header("Location: submit_quiz.php?score=$score");
-
     exit();
 }
 
@@ -100,7 +109,7 @@ mysqli_close($conn);
             </div>
             <?php endforeach; ?>    
             <div class="button">
-                <button type="submit" class="submit" name="przycisk">Sprawdź odpowiedzi</button><br>
+                <button type="submit" class="submit" name="przycisk">Check answers</button><br>
             </div>
             <div style="height: 250px;"></div>
         </form>

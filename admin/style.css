@@ -15,7 +15,6 @@ html {
     width: 100%;
 }
 body {
-    height: 100%;
     width: 100%;
 }
 header {
@@ -75,12 +74,19 @@ th[scope="col"] {
     border-top-color: rgb(50, 56, 62) !important;
     color: white !important;
 }
-table {
-    width: 50%;
-    text-align: center;
-}
 .main {  
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100%;
+}
+input {
+    padding: 0 20px 0 20px;
+    border: 1px solid #878181;
+    border-radius: 3px;
+    background-color: transparent;
+    margin-right: 10px !important;
+}
+table tr:nth-child(even) {
+    background-color: #f8f8f8 !important;
 }

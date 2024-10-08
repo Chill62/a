@@ -65,7 +65,7 @@ if (!isset($_COOKIE['user_login'])) {
                         echo "<div>"."godzina: ". $row2['godzina'] . "</div>";
                         echo "<div>"."data: ". $row2['data'] . "</div>";
                     } else {
-                        echo "<div>No data available</div><div></div><div></div>";
+                        echo "<div>No data available</div>";
                     }
                     ?>
                 </div>

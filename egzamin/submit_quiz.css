@@ -126,5 +126,8 @@ form {
     width: 80%;
 }
 .green {
-    background-color: #00560f;
+    background-color: #08540c;
+}
+.red {
+    background-color: red;
 }

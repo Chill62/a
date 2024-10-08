@@ -40,7 +40,7 @@ if (!isset($_COOKIE['user_login'])) {
                 </div>
                 <div class="ranking">
                     <?php 
-                        $sql = "SELECT ROW_NUMBER() OVER (ORDER BY wynik DESC) AS pozycja, wynik, login FROM logowanie WHERE wynik >= 50 LIMIT 10;";
+                        $sql = "SELECT ROW_NUMBER() OVER (ORDER BY ranking.wynik DESC) AS pozycja,ranking.wynik,logowanie.login FROM ranking JOIN logowanie ON ranking.user_login = logowanie.login WHERE ranking.wynik >= 50 LIMIT 10;";
                         $q = mysqli_query($conn , $sql);
                         while($row = mysqli_fetch_array($q)) {
                             echo "<div class='flexgap'>";
@@ -58,7 +58,7 @@ if (!isset($_COOKIE['user_login'])) {
             <div class="dane">
                 <div class="result">
                     <?php 
-                    $sql2 = "SELECT wynik, godzina, data FROM logowanie ORDER BY id DESC LIMIT 1";
+                    $sql2 = "SELECT wynik, godzina, data FROM ranking ORDER BY id DESC LIMIT 1";
                     $q2 = mysqli_query($conn, $sql2);
                     if ($row2 = mysqli_fetch_array($q2)) {
                         echo "<div>"."wynik: ".$row2['wynik'] . "%</div>";

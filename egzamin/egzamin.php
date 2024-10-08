@@ -22,7 +22,6 @@ if (!isset($_SESSION['quiz'])) {
     }
     $_SESSION['quiz'] = $quiz; 
 }
-
 if (isset($_POST['przycisk'])) {
     $score = 0; 
 
@@ -33,10 +32,11 @@ if (isset($_POST['przycisk'])) {
         }
     }
     $score2 = $score * 4;
-    $stmt = mysqli_prepare($conn, 'INSERT INTO logowanie (wynik, data, godzina) VALUES (?, CURRENT_DATE, CURRENT_TIME)');
+    $userLogin = $_COOKIE['user_login'];
+    $stmt = mysqli_prepare($conn, 'INSERT INTO ranking (wynik, data, godzina, user_login) VALUES (?, CURRENT_DATE, CURRENT_TIME, ?)');
     
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "i", $score2);
+        mysqli_stmt_bind_param($stmt, "is", $score2, htmlspecialchars($userLogin)); 
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     }
@@ -99,6 +99,7 @@ mysqli_close($conn);
             <div class="button">
                 <button type="submit" class="submit" name="przycisk">Sprawdź odpowiedzi</button><br>
             </div>
+            <div style="height: 250px;"></div>
         </form>
     </main>
 </body>

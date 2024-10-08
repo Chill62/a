@@ -14,16 +14,13 @@ if (!isset($_SESSION['quiz'])) {
     while ($question = mysqli_fetch_array($result)) {
         $quiz[] = $question;
     }
+    $_SESSION['quiz'] = $quiz;
 }
-
 if (isset($_POST['przycisk'])) {
     $score = 0; 
-    $quiz = $_SESSION['quiz'];
 
     foreach ($quiz as $question) {
-        $questionId = $question['id']; 
         $correctAnswer = $question['poprawna_odpowiedz']; 
-
         if (isset($_POST["question_$questionId"]) && $_POST["question_$questionId"] == $correctAnswer) {
             $score++;
         }
@@ -57,15 +54,14 @@ mysqli_close($conn);
     <main>
         <form method="POST">
             <?php 
-            $questionId = $question['id'];
-            foreach ($_SESSION['quiz'] as $question): 
+            foreach ($_SESSION['quiz'] as $question):
+                $questionId = $question['id']; 
             ?>
             <div class="quiz">
                 <fieldset>
                     <legend><?php echo htmlspecialchars($question['zapytanie']); ?></legend>
                     <div class="options">
                         <label>
-                            <?php if(isset($_POST["question_$questionId"])) {echo $_POST["question_$questionId"];} ?>
                             <input type="radio" name="question_<?php echo $question['id']; ?>" value="A">
                             <?php echo htmlspecialchars($question['A']); ?>
                         </label>

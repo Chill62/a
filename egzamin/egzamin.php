@@ -12,7 +12,7 @@ if (!isset($_SESSION['quiz'])) {
     $q = "SELECT pytania.id, pytania.zapytanie, pytania.poprawna_odpowiedz, odpowiedz.A, odpowiedz.B, odpowiedz.C, odpowiedz.D 
           FROM pytania 
           JOIN odpowiedz ON pytania.odpowiedz_id = odpowiedz.id 
-          ORDER BY RAND() LIMIT 20;";
+          ORDER BY RAND() LIMIT 25;";
           
     $result = mysqli_query($conn, $q);
     $quiz = [];

@@ -10,7 +10,9 @@ if (!isset($_COOKIE['user_login'])) {
 if (isset($_POST['delete'])) {
     $id = $_POST['id'];
     $sql2 = "DELETE FROM pytania WHERE id = $id";
+    $sql3 = "DELETE FROM odpowiedz WHERE id = $id";
     mysqli_query($conn, $sql2);
+    mysqli_query($conn , $sql3);
 }
 
 if (isset($_POST['save'])) {
@@ -19,6 +21,26 @@ if (isset($_POST['save'])) {
     $sql = "UPDATE pytania SET zapytanie = '$pytanie' WHERE id = $id";
     mysqli_query($conn, $sql);
 }
+if (isset($_POST['add_question'])) {
+    $new_pytanie = $_POST['new_pytanie'];
+    $odp = $_POST['Odp'];
+    $A = "A. ".$_POST['A'];
+    $B = "B. ".$_POST['B'];
+    $C = "C. ".$_POST['C'];
+    $D = "D. ".$_POST['D'];
+
+    if(strlen($new_pytanie) > 10) {
+        $sql4 = "INSERT INTO odpowiedz (A,B,C,D) VALUES ('$A','$B','$C','$D')";
+        if (mysqli_query($conn, $sql4)) {
+            $last_answer_id = mysqli_insert_id($conn);
+            $sql3 = "INSERT INTO pytania (zapytanie, poprawna_odpowiedz, odpowiedz_id) VALUES ('$new_pytanie', '$odp', '$last_answer_id')";
+            mysqli_query($conn, $sql3);
+        }
+    } else {
+        $error = "Too few characters"; 
+    }
+}
+
 
 $sql = "SELECT * FROM pytania";
 $q = mysqli_query($conn, $sql);
@@ -47,11 +69,28 @@ $q = mysqli_query($conn, $sql);
             <thead class="thead-dark">
                 <tr>
                     <th style="text-align: center;" scope="col">#</th>
-                    <th scope="col">Pytanie</th>
+                    <th scope="col">Pytanie</th> 
                     <th style="text-align:center; width:20%;" scope="col">Akcje</th>
                 </tr>
             </thead>
             <tbody>
+                <tr>
+                    <form method="POST" action="admin.php">  
+                        <td style="text-align: center;">#</td>
+                        <td style="display: flex;">
+                            <input type="text" name="new_pytanie" class="form-control" style="width: 40%;" placeholder="<?php if(!isset($error)) {echo "add new question";}else {echo "Error - ".$error." need more than 10";} ?>">
+                            <input type="text" name="A" class="form-control" style="width: 15%;" placeholder="Question A">
+                            <input type="text" name="B" class="form-control" style="width: 15%;" placeholder="Question B">
+                            <input type="text" name="C" class="form-control" style="width: 15%;" placeholder="Question C">
+                            <input type="text" name="D" class="form-control" style="width: 15%;" placeholder="Question D">
+                            <input type="text" name="Odp" class="form-control" style="width: 10%; text-align:center" placeholder="Answer">
+                        </td>
+                        <td style="text-align:center">
+                            <input type="submit" class="btn btn-success" value="Add Question" name="add_question">
+                        </td>
+                    </form>
+                </tr>
+
                 <?php
                 $editId = null;
                 if (isset($_POST['edit'])) {
@@ -81,7 +120,6 @@ $q = mysqli_query($conn, $sql);
                         echo "<input type='submit' value='Delete' name='delete'>";
                         echo '</form>';
                     }
-
                     echo '</td>';
                     echo '</tr>';
                 }

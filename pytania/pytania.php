@@ -1,13 +1,14 @@
 <?php 
-$conn = mysqli_connect('localhost', 'root', '', 'egzamin');
+    $conn = mysqli_connect('localhost', 'root', '', 'egzamin');
 
-if (!isset($_COOKIE['user_login'])) {
-    header('Location: ../logowanie.php');
-    exit(); 
-}
+    if (!isset($_COOKIE['user_login'])) {
+        header('Location: ../logowanie.php');
+        exit(); 
+    }
 
-$sql = "SELECT ROW_NUMBER() OVER (ORDER BY poprawnosc ASC) as pozycja, poprawnosc, zapytanie , total FROM pytania ORDER BY poprawnosc ASC LIMIT 10 ";
-$q = mysqli_query($conn, $sql);
+    $sql = "SELECT ROW_NUMBER() OVER (ORDER BY poprawnosc ASC) as pozycja, poprawnosc, zapytanie, total FROM pytania WHERE poprawnosc != 0 ORDER BY poprawnosc ASC LIMIT 10";
+    $q = mysqli_query($conn, $sql);
+    mysqli_close($conn)
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,14 +40,26 @@ $q = mysqli_query($conn, $sql);
             </thead>
             <tbody>
                 <?php
-                while ($row = mysqli_fetch_array($q)) {
-                    $Ratio = number_format(($row['poprawnosc'] / $row['total']) * 100, 2) . "%";
-                    echo '<tr>';
-                    echo '<th scope="row">' .$row['pozycja'] . '</th>';
-                    echo '<td>' . $Ratio . '</td>';
-                    echo '<td>' . $row['zapytanie'] . '</td>';
-                    echo '</tr>';
-                }
+                    $results = []; 
+
+                    while ($row = mysqli_fetch_array($q)) {
+                        $row['Ratio'] = ($row['poprawnosc'] / $row['total']) * 100;
+                        $results[] = $row; 
+                    }
+
+                    $array = range(1, 10); 
+                    usort($results, function($a, $b) {
+                        return $a['Ratio'] <=> $b['Ratio']; 
+                    });
+
+                    foreach ($results as $index => $row) {
+                        $Ratio = number_format($row['Ratio'], 2) . "%"; 
+                        echo '<tr>';
+                        echo '<th scope="row">' . $array[$index] . '</th>'; 
+                        echo '<td>' . $Ratio . '</td>';
+                        echo '<td>' . $row['zapytanie'] . '</td>';
+                        echo '</tr>';
+                    }
                 ?>
             </tbody>
         </table>
@@ -54,6 +67,3 @@ $q = mysqli_query($conn, $sql);
 </body>
 </html>
 
-<?php
-mysqli_close($conn);
-?>

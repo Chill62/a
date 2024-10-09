@@ -26,6 +26,7 @@ if (!isset($_SESSION['quiz'])) {
 if (isset($_POST['przycisk'])) {
     $score = 0; 
     $right = 0;
+    $userAnswers = []; 
     
     foreach ($_SESSION['quiz'] as $question) {
         $correctAnswer = $question['poprawna_odpowiedz']; 
@@ -35,14 +36,18 @@ if (isset($_POST['przycisk'])) {
             $totalUpdateSql = "UPDATE pytania SET total = total + 1 WHERE id = $questionId";
             mysqli_query($conn, $totalUpdateSql);
 
-            if ($_POST["question_" . $questionId] == $correctAnswer) {
+            $userAnswer = $_POST["question_" . $questionId]; 
+            $userAnswers[$questionId] = $userAnswer; 
+            
+            if ($userAnswer == $correctAnswer) {
                 $score++;
                 $sql = "UPDATE pytania SET poprawnosc = poprawnosc + 1 WHERE id = $questionId";
                 mysqli_query($conn, $sql);
             }
         }
-    }
-    
+    } 
+    setcookie('user_answers', json_encode($userAnswers), time() + (86400 * 30), "/");
+
     $score2 = $score * 4;
     $userLogin = $_COOKIE['user_login'];
     $stmt = mysqli_prepare($conn, 'INSERT INTO ranking (wynik, data, godzina, user_login) VALUES (?, CURRENT_DATE, CURRENT_TIME, ?)');
@@ -56,7 +61,6 @@ if (isset($_POST['przycisk'])) {
     header("Location: submit_quiz.php?score=$score");
     exit();
 }
-
 mysqli_close($conn);
 ?>
 

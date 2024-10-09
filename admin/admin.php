@@ -1,7 +1,6 @@
 <?php 
 $conn = mysqli_connect('localhost', 'root', '', 'egzamin');
 
-
 if (!isset($_COOKIE['user_login'])) {
     header('Location: ../logowanie.php');
     exit(); 
@@ -10,7 +9,7 @@ if (!isset($_COOKIE['user_login'])) {
 if (isset($_POST['delete'])) {
     $id = $_POST['id'];
     $sql2 = "DELETE FROM pytania WHERE id = $id";
-    $sql3 = "DELETE FROM odpowiedz WHERE id = $id";
+    $sql3 = "DELETE FROM odpowiedz WHERE id = (SELECT odpowiedz_id FROM pytania WHERE id = $id)";
     mysqli_query($conn, $sql2);
     mysqli_query($conn , $sql3);
 }
@@ -18,19 +17,31 @@ if (isset($_POST['delete'])) {
 if (isset($_POST['save'])) {
     $id = $_POST['id'];
     $pytanie = $_POST['pytanie']; 
-    $sql = "UPDATE pytania SET zapytanie = '$pytanie' WHERE id = $id";
+    $A = $_POST['A'];
+    $B = $_POST['B'];
+    $C = $_POST['C'];
+    $D = $_POST['D'];
+    $odp = $_POST['odp'];
+
+    // Update question
+    $sql = "UPDATE pytania SET zapytanie = '$pytanie', poprawna_odpowiedz = '$odp' WHERE id = $id";
+    mysqli_query($conn, $sql);
+
+    // Update answers
+    $sql = "UPDATE odpowiedz SET A = '$A', B = '$B', C = '$C', D = '$D' WHERE id = (SELECT odpowiedz_id FROM pytania WHERE id = $id)";
     mysqli_query($conn, $sql);
 }
+
 if (isset($_POST['add_question'])) {
     $new_pytanie = $_POST['new_pytanie'];
-    $odp = $_POST['Odp'];
+    $odp = $_POST['odp'];
     $A = "A. ".$_POST['A'];
     $B = "B. ".$_POST['B'];
     $C = "C. ".$_POST['C'];
     $D = "D. ".$_POST['D'];
 
-    if(strlen($new_pytanie) > 10) {
-        $sql4 = "INSERT INTO odpowiedz (A,B,C,D) VALUES ('$A','$B','$C','$D')";
+    if(strlen($new_pytanie) > 10 && strlen($new_pytanie) < 255) {
+        $sql4 = "INSERT INTO odpowiedz (A, B, C, D) VALUES ('$A', '$B', '$C', '$D')";
         if (mysqli_query($conn, $sql4)) {
             $last_answer_id = mysqli_insert_id($conn);
             $sql3 = "INSERT INTO pytania (zapytanie, poprawna_odpowiedz, odpowiedz_id) VALUES ('$new_pytanie', '$odp', '$last_answer_id')";
@@ -41,9 +52,9 @@ if (isset($_POST['add_question'])) {
     }
 }
 
-
-$sql = "SELECT * FROM pytania";
-$q = mysqli_query($conn, $sql);
+$sql_p = "SELECT pytania.*, odpowiedz.A, odpowiedz.B, odpowiedz.C, odpowiedz.D FROM pytania JOIN odpowiedz ON pytania.odpowiedz_id = odpowiedz.id";
+$q = mysqli_query($conn, $sql_p);
+mysqli_close($conn);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,57 +80,80 @@ $q = mysqli_query($conn, $sql);
             <thead class="thead-dark">
                 <tr>
                     <th style="text-align: center;" scope="col">#</th>
-                    <th scope="col">Pytanie</th> 
+                    <th scope="col">Pytanie</th>
+                    <th scope="col">A</th>
+                    <th scope="col">B</th>
+                    <th scope="col">C</th>
+                    <th scope="col">D</th>
+                    <th scope="col">Answer</th>
                     <th style="text-align:center; width:20%;" scope="col">Akcje</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <form method="POST" action="admin.php">  
-                        <td style="text-align: center;">#</td>
-                        <td style="display: flex;">
-                            <input type="text" name="new_pytanie" class="form-control" style="width: 40%;" placeholder="<?php if(!isset($error)) {echo "add new question";}else {echo "Error - ".$error." need more than 10";} ?>">
-                            <input type="text" name="A" class="form-control" style="width: 15%;" placeholder="Question A">
-                            <input type="text" name="B" class="form-control" style="width: 15%;" placeholder="Question B">
-                            <input type="text" name="C" class="form-control" style="width: 15%;" placeholder="Question C">
-                            <input type="text" name="D" class="form-control" style="width: 15%;" placeholder="Question D">
-                            <input type="text" name="Odp" class="form-control" style="width: 10%; text-align:center" placeholder="Answer">
+                        <td style="text-align: center;">
                         </td>
-                        <td style="text-align:center">
+                        <td>
+                            <input type="text" name="new_pytanie" class="form-control" placeholder="<?php echo !isset($error) ? 'Add new question' : 'Error - '.$error; ?>">
+                        </td>
+                        <td>
+                            <input type="text" name="A" class="form-control" placeholder="Question A">
+                        </td>
+                        <td>
+                            <input type="text" name="B" class="form-control" placeholder="Question B">
+                        </td>
+                        <td>
+                            <input type="text" name="C" class="form-control" placeholder="Question C">
+                        </td>
+                        <td>
+                            <input type="text" name="D" class="form-control" placeholder="Question D">
+                        </td>
+                        <td>
+                            <select name="odp" class="form-select"> 
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                            </select>
+                        </td>
+                        <td style="text-align: center;">
                             <input type="submit" class="btn btn-success" value="Add Question" name="add_question">
                         </td>
                     </form>
                 </tr>
-
                 <?php
-                $editId = null;
-                if (isset($_POST['edit'])) {
-                    $editId = $_POST['id'];
-                }
+                $editId = isset($_POST['edit']) ? $_POST['id'] : null;
                 while ($row = mysqli_fetch_array($q)) {
                     echo '<tr>';
                     echo '<th style="text-align:center" scope="row">' . $row['id'] . '</th>';
                     echo '<td>';
-                    if ($editId == $row['id']) {
-                        echo '<form method="POST" action="admin.php">';
-                        echo "<input type='hidden' name='id' value='" . $row['id'] . "'>";
-                        echo "<input type='text' style='width:40%;' name='pytanie' value='" . $row['zapytanie'] . "'>";
-                    } else {
-                        echo $row['zapytanie'];
-                    }
+                    echo $editId == $row['id'] ? "<form method='POST' action='admin.php'><input type='hidden' name='id' value='" . $row['id'] . "'><input type='text' style='width:100%;' name='pytanie' value='" . $row['zapytanie'] . "'>" : $row['zapytanie'];
+                    echo '</td>';
+                    echo '<td>';
+                    echo $editId == $row['id'] ? "<input type='text' name='A' value='" . $row['A'] . "'>" : $row['A'];
+                    echo '</td>';
+                    echo '<td>';
+                    echo $editId == $row['id'] ? "<input type='text' name='B' value='" . $row['B'] . "'>" : $row['B'];
+                    echo '</td>';
+                    echo '<td>';
+                    echo $editId == $row['id'] ? "<input type='text' name='C' value='" . $row['C'] . "'>" : $row['C'];
+                    echo '</td>';
+                    echo '<td>';
+                    echo $editId == $row['id'] ? "<input type='text' name='D' value='" . $row['D'] . "'>" : $row['D'];
+                    echo '</td>';
+                    echo '<td>';
+                    echo $editId == $row['id'] ? 
+                        "<select name='odp'>
+                            <option value='A' ".($row['poprawna_odpowiedz'] == 'A' ? 'selected' : '').">A</option>
+                            <option value='B' ".($row['poprawna_odpowiedz'] == 'B' ? 'selected' : '').">B</option>
+                            <option value='C' ".($row['poprawna_odpowiedz'] == 'C' ? 'selected' : '').">C</option>
+                            <option value='D' ".($row['poprawna_odpowiedz'] == 'D' ? 'selected' : '').">D</option>
+                        </select>" 
+                        : $row['poprawna_odpowiedz'];
                     echo '</td>';
                     echo '<td style="text-align:center">';
-                    if ($editId == $row['id']) {
-                        echo "<input type='submit' value='Save' name='save'>";
-                        echo "<input type='submit' value='Delete' name='delete'>";
-                        echo '</form>';  
-                    } else {
-                        echo '<form method="POST" action="admin.php">';
-                        echo "<input type='hidden' name='id' value='" . $row['id'] . "'>";
-                        echo "<input type='submit' value='Edit' name='edit'>";
-                        echo "<input type='submit' value='Delete' name='delete'>";
-                        echo '</form>';
-                    }
+                    echo $editId == $row['id'] ? "<input type='submit' value='Save' name='save'><input type='submit' value='Delete' name='delete'></form>" : "<form method='POST' action='admin.php'><input type='hidden' name='id' value='" . $row['id'] . "'><input type='submit' value='Edit' name='edit'><input type='submit' value='Delete' name='delete'></form>";
                     echo '</td>';
                     echo '</tr>';
                 }
@@ -130,7 +164,3 @@ $q = mysqli_query($conn, $sql);
     <script src="script.js"></script>
 </body>
 </html>
-
-<?php
-mysqli_close($conn);
-?>

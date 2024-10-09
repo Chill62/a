@@ -4,13 +4,17 @@ $conn = mysqli_connect('localhost', 'root', '', 'egzamin');
 
 $quiz = $_SESSION['quiz'];
 $score = $_GET['score'];
-if (!isset($_COOKIE['user_login'])) {
 
+if (!isset($_COOKIE['user_login'])) {
     header('Location: ../logowanie.php');
     exit(); 
 }
-?>
 
+$userAnswers = [];
+if (isset($_COOKIE['user_answers'])) {
+    $userAnswers = json_decode($_COOKIE['user_answers'], true); 
+}
+?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -43,42 +47,57 @@ if (!isset($_COOKIE['user_login'])) {
                 <?php foreach ($quiz as $question):    
                     $questionId = $question['id'];
                     $correctAnswer = $question['poprawna_odpowiedz'];
+                    $selectedAnswer = '';
+                    if (isset($userAnswers[$questionId])) {
+                        $selectedAnswer = $userAnswers[$questionId];
+                    }
                 ?>
                 <div class="quiz">
                     <fieldset>
                         <legend><?php echo htmlspecialchars($question['zapytanie']); ?></legend>
-                        
                         <div class="options">
-                            <label 
-                                <?php 
+                            <label <?php 
                                 if ($correctAnswer == 'A') {
                                     echo 'class="green"';
-                                } else { echo 'class="red"';}
-                                ?>>
+                                } elseif ($selectedAnswer == 'A') {
+                                    echo 'class="red"';
+                                }else {
+                                    echo 'class=not';
+                                }
+                            ?>>
                                 <?php echo htmlspecialchars($question['A']); ?>
                             </label>
-                            <label 
-                                <?php 
+                            <label <?php 
                                 if ($correctAnswer == 'B') {
                                     echo 'class="green"';
-                                } else { echo 'class="red"';}
-                                ?>>
+                                } elseif ($selectedAnswer == 'B') {
+                                    echo 'class="red"';
+                                }else {
+                                    echo 'class=not';
+                                }
+                            ?>>
                                 <?php echo htmlspecialchars($question['B']); ?>
                             </label>
-                            <label 
-                                <?php 
+                            <label <?php 
                                 if ($correctAnswer == 'C') {
                                     echo 'class="green"';
-                                } else { echo 'class="red"';} 
-                                ?>>
+                                } elseif ($selectedAnswer == 'C') {
+                                    echo 'class="red"';
+                                }else {
+                                    echo 'class=not';
+                                }
+                            ?>>
                                 <?php echo htmlspecialchars($question['C']); ?>
                             </label>
-                            <label 
-                                <?php 
+                            <label <?php 
                                 if ($correctAnswer == 'D') {
                                     echo 'class="green"';
-                                } else { echo 'class="red"';} 
-                                ?>>
+                                } elseif ($selectedAnswer == 'D') {
+                                    echo 'class="red"';
+                                }else {
+                                    echo 'class=not';
+                                }
+                            ?>>
                                 <?php echo htmlspecialchars($question['D']); ?>
                             </label>
                         </div>

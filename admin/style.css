@@ -90,3 +90,44 @@ input {
 table tr:nth-child(even) {
     background-color: #f8f8f8 !important;
 }
+.table {
+    width: 100%;
+}
+.inp1 {
+    display: flex; 
+    width: 100%;
+    gap: 28px;
+    row-gap: 10px; 
+}
+tr th {
+    text-align: center;
+}
+tr td {
+    text-align: center;
+}
+input {
+    text-align: center;
+}
+.btn {
+    width: 60%;
+}
+.Select-Form {
+    border-radius: 3px;
+    text-align: center;
+    appearance: none !important;
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    border: 1px solid #878181;
+}
+option {
+    text-align: center;
+}
+input[type="text"], select {
+    width: 100%;
+    box-sizing: border-box; 
+}
+

@@ -58,14 +58,15 @@ if (!isset($_COOKIE['user_login'])) {
             <div class="dane">
                 <div class="result">
                     <?php 
-                    $sql2 = "SELECT wynik, godzina, data FROM ranking ORDER BY id DESC LIMIT 1";
+                    $userLogin = htmlspecialchars($_COOKIE['user_login']);
+                    $sql2 = "SELECT wynik, godzina, data FROM ranking WHERE user_login = '$userLogin' ORDER BY id DESC LIMIT 1";
                     $q2 = mysqli_query($conn, $sql2);
                     if ($row2 = mysqli_fetch_array($q2)) {
                         echo "<div>"."wynik: ".$row2['wynik'] . "%</div>";
                         echo "<div>"."godzina: ". $row2['godzina'] . "</div>";
                         echo "<div>"."data: ". $row2['data'] . "</div>";
                     } else {
-                        echo "<div>No data available</div><div></div><div></div>";
+                        echo "<div><b>You haven't taken a test yet</b></div>";
                     }
                     ?>
                 </div>

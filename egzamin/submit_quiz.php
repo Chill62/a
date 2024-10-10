@@ -55,6 +55,18 @@ if (isset($_COOKIE['user_answers'])) {
                 <div class="quiz">
                     <fieldset>
                         <legend><?php echo htmlspecialchars($question['zapytanie']); ?></legend>
+                        <div class="user_answer"><?php 
+                        if (!empty($selectedAnswer)) {
+                            if ($selectedAnswer != $correctAnswer) {
+                                echo "<div style='color:red'>Wybrałeś złą odpowiedź - $selectedAnswer</div>";
+                            } else {
+                                echo "<div style='color:green'>Wybrałeś dobrą odpowiedź - $selectedAnswer</div>";
+                            }
+                        } else {
+                            echo "<div style='color:blue'>Nie wybrałeś odpowiedzi</div>";
+                        }
+                                            
+                            ?>
                         <div class="options">
                             <label <?php 
                                 if ($correctAnswer == 'A') {

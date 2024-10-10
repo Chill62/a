@@ -23,11 +23,11 @@ if (isset($_POST['save'])) {
     $D = $_POST['D'];
     $odp = $_POST['odp'];
 
-    // Update question
+ 
     $sql = "UPDATE pytania SET zapytanie = '$pytanie', poprawna_odpowiedz = '$odp' WHERE id = $id";
     mysqli_query($conn, $sql);
 
-    // Update answers
+
     $sql = "UPDATE odpowiedz SET A = '$A', B = '$B', C = '$C', D = '$D' WHERE id = (SELECT odpowiedz_id FROM pytania WHERE id = $id)";
     mysqli_query($conn, $sql);
 }

@@ -27,9 +27,9 @@ if (isset($_COOKIE['user_answers'])) {
         <nav>
             <div class="link-container">
                 <div class="link"><a href="../main_site.php">Main site</a></div>
-                <div class="link"><a href="questions.php">Hardest questions</a></div>
+                <div class="link"><a href="../pytania/pytania.php">Hardest questions</a></div>
                 <div class="link"><a href="../egzamin/egzamin.php">Exam</a></div>
-                <div class="link"><a href="admin_panel.php">Admin panel</a></div>
+                <div class="link"><a href="../admin/admin.php">Admin panel</a></div>
             </div>
         </nav>
     </header>
@@ -56,17 +56,20 @@ if (isset($_COOKIE['user_answers'])) {
                     <fieldset>
                         <legend><?php echo htmlspecialchars($question['zapytanie']); ?></legend>
                         <div class="user_answer"><?php 
-                        if (!empty($selectedAnswer)) {
-                            if ($selectedAnswer != $correctAnswer) {
-                                echo "<div style='color:red'>Wybrałeś złą odpowiedź - $selectedAnswer</div>";
-                            } else {
+                        if (isset($selectedAnswer)) {
+                            if($selectedAnswer != $correctAnswer) {
+                            echo "<div style='color:red'Wybrałeś złą odpowiedź - $selectedAnswer</div>";                                
+                            }elseif ($selectedAnswer != null && $selectedAnswer == $correctAnswer) {
                                 echo "<div style='color:green'>Wybrałeś dobrą odpowiedź - $selectedAnswer</div>";
                             }
-                        } else {
-                            echo "<div style='color:blue'>Nie wybrałeś odpowiedzi</div>";
-                        }
-                                            
-                            ?>
+                            if($selectedAnswer == null)
+                            {
+                                echo "<div style='color:blue'>Nie wybrałeś odpowiedzi</div>";
+                            }
+                        }        
+                        
+
+                         ?>
                         <div class="options">
                             <label <?php 
                                 if ($correctAnswer == 'A') {

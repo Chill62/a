@@ -134,4 +134,13 @@ a {
 }
 .link:hover::after {
     transform: scaleX(0.99);
+}   
+.log {
+    display: flex;
+    justify-content: center;
+    align-items:flex-start;
+    height: 250px;
+}
+.log input {
+    background-color: red;
 }

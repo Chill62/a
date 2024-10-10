@@ -69,9 +69,9 @@ mysqli_close($conn);
         <nav>
             <div class="link-container1">
                 <div class="link1"><a href="../main_site.php">Main site</a></div>
-                <div class="link1"><a href="questions.php">Hardest questions</a></div>
+                <div class="link1"><a href="../pytania/pytania.php">Hardest questions</a></div>
                 <div class="link1"><a href="../egzamin/egzamin.php">Exam</a></div>
-                <div class="link1"><a href="admin_panel.php">Admin panel</a></div>
+                <div class="link1"><a href="../admin/admin.php">Admin panel</a></div>
             </div>
         </nav>
     </header>
@@ -123,40 +123,14 @@ mysqli_close($conn);
                     </form>
                 </tr>
                 <?php
-                $editId = isset($_POST['edit']) ? $_POST['id'] : null;
-                while ($row = mysqli_fetch_array($q)) {
-                    echo '<tr>';
-                    echo '<th style="text-align:center" scope="row">' . $row['id'] . '</th>';
-                    echo '<td>';
-                    echo $editId == $row['id'] ? "<form method='POST' action='admin.php'><input type='hidden' name='id' value='" . $row['id'] . "'><input type='text' style='width:100%;' name='pytanie' value='" . $row['zapytanie'] . "'>" : $row['zapytanie'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $editId == $row['id'] ? "<input type='text' name='A' value='" . $row['A'] . "'>" : $row['A'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $editId == $row['id'] ? "<input type='text' name='B' value='" . $row['B'] . "'>" : $row['B'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $editId == $row['id'] ? "<input type='text' name='C' value='" . $row['C'] . "'>" : $row['C'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $editId == $row['id'] ? "<input type='text' name='D' value='" . $row['D'] . "'>" : $row['D'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $editId == $row['id'] ? 
-                        "<select name='odp'>
-                            <option value='A' ".($row['poprawna_odpowiedz'] == 'A' ? 'selected' : '').">A</option>
-                            <option value='B' ".($row['poprawna_odpowiedz'] == 'B' ? 'selected' : '').">B</option>
-                            <option value='C' ".($row['poprawna_odpowiedz'] == 'C' ? 'selected' : '').">C</option>
-                            <option value='D' ".($row['poprawna_odpowiedz'] == 'D' ? 'selected' : '').">D</option>
-                        </select>" 
-                        : $row['poprawna_odpowiedz'];
-                    echo '</td>';
-                    echo '<td style="text-align:center">';
-                    echo $editId == $row['id'] ? "<input type='submit' value='Save' name='save'><input type='submit' value='Delete' name='delete'></form>" : "<form method='POST' action='admin.php'><input type='hidden' name='id' value='" . $row['id'] . "'><input type='submit' value='Edit' name='edit'><input type='submit' value='Delete' name='delete'></form>";
-                    echo '</td>';
-                    echo '</tr>';
+                require_once("funkcja.php");
+                if (isset($_POST['edit'])) {
+                    $editId = $_POST['id'];
+                } else {
+                    $editId = null;
                 }
+                renderTableRows($q, $editId);
+                
                 ?>
             </tbody>
         </table>

@@ -5,9 +5,14 @@ $conn = mysqli_connect('localhost', 'root', '', 'egzamin');
 
 if (!isset($_COOKIE['user_login'])) {
     header('Location: ../logowanie.php');
+    session_destroy();
     exit(); 
 }
+if(isset($_POST['reset'])) {
+    session_destroy();
+    header('Location: egzamin.php?refresh=true');
 
+}
 if (!isset($_SESSION['quiz'])) {
     $q = "SELECT pytania.id, pytania.zapytanie, pytania.poprawna_odpowiedz, odpowiedz.A, odpowiedz.B, odpowiedz.C, odpowiedz.D 
           FROM pytania 
@@ -76,9 +81,9 @@ mysqli_close($conn);
         <nav>
             <div class="link-container">
                 <div class="link"><a href="../main_site.php">Main site</a></div>
-                <div class="link"><a href="questions.php">Hardest questions</a></div>
+                <div class="link"><a href="../pytania/pytania.php">Hardest questions</a></div>
                 <div class="link"><a href="../egzamin/egzamin.php">Exam</a></div>
-                <div class="link"><a href="admin_panel.php">Admin panel</a></div>
+                <div class="link"><a href="../admin/admin.php">Admin panel</a></div>
             </div>
         </nav>
     </header>
@@ -115,7 +120,8 @@ mysqli_close($conn);
             <div class="button">
                 <button type="submit" class="submit" name="przycisk">Check answers</button><br>
             </div>
-            <div style="height: 250px;"></div>
+            
+            <div class="log"><input type="submit" class="submit" name="reset" value="Reset exam"></div>
         </form>
     </main>
 </body>

@@ -23,9 +23,9 @@
         <nav>
             <div class="link-container1">
                 <div class="link1"><a href="../main_site.php">Main site</a></div>
-                <div class="link1"><a href="questions.php">Hardest questions</a></div>
+                <div class="link1"><a href="../pytania/pytania.php">Hardest questions</a></div>
                 <div class="link1"><a href="../egzamin/egzamin.php">Exam</a></div>
-                <div class="link1"><a href="admin_panel.php">Admin panel</a></div>
+                <div class="link1"><a href="pytania.php">Admin panel</a></div>
             </div>
         </nav>
     </header>

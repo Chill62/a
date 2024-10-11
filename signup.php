@@ -1,9 +1,46 @@
 <?php 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+ 
+
+function sendMail($email,$v_code)  // zamienie na odzdzielny plik pewnie
+{
+
+    require 'PHPMailer/PHPMailer.php';
+    require 'PHPMailer/SMTP.php"';
+    require 'PHPMailer/Exception.php'; 
+    $mail = new PHPMailer(true);
+
+    try {
+
+        $mail->isSMTP();                                            //Send using SMTP
+        $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+        $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+        $mail->Username   = 'wyslijdonejta@gmail.com';                     //SMTP username
+        $mail->Password   = 'bksp usez urmw yxyi';                               //SMTP password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
+        $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+    
+        //Recipients
+        $mail->setFrom('wyslijdonejta@gmail.com', 'Verification');
+        $mail->addAddress($email);    
+
+        $mail->isHTML(true);                                  //Set email format to HTML
+        $mail->Subject = 'Email verification';
+        $mail->Body    = "<a href='http://localhost/projekt/verify.php?email=$email&v_code=$v_code'>Verify</a>";
+    
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    }
+}
+
+
 session_start();
 
 $conn = mysqli_connect('localhost', 'root', '', 'egzamin');
-require_once('./PHPMailer/mail.php');
-require_once('./PHPMailer/Send.php');   
+  
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['login'], $_POST['haslo'], $_POST['email'])) {
@@ -36,9 +73,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $stmt = mysqli_prepare($conn, 'INSERT INTO logowanie (login, haslo, email, verification_code) VALUES (?, ?, ?,?)');        
                         mysqli_stmt_bind_param($stmt, "ssss", $login, $haslo_hash, $email,$v_code);
                         mysqli_stmt_execute($stmt);
-                        if($stmt)
+                        if($stmt && sendMail($email,$v_code))
                         {
-                            header('Location:signup.php');
+                            $green = "email sent successfully";
                         }
                     }
                 }
@@ -47,6 +84,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         } else {
             $error = "Your email is invalid";
+            if(!isset($error))
+            {
+                echo $green;
+            }
         }
         
     }

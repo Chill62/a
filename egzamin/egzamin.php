@@ -1,13 +1,8 @@
 <?php
 session_start();
 
-include '../multi/conn.php';
+include '../includes/conn.php';
 
-if (!isset($_COOKIE['user_login'])) {
-    session_destroy();
-    header('Location: ../logowanie.php');
-    exit(); 
-}
 if(isset($_POST['reset'])) {
     session_destroy();
     header('Location: egzamin.php?refresh=true');
@@ -79,7 +74,7 @@ mysqli_close($conn);
 <body>
     <header>
         <nav>
-            <?php include_once '../multi/navbar.html'?>
+            <?php include_once '../includes/navbar.html'?>
         </nav>
     </header>
     <main>

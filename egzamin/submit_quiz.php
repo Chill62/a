@@ -1,16 +1,11 @@
 <?php
 session_start();
-include '../multi/conn.php';
+include '../includes/conn.php';
 
 $quiz = $_SESSION['quiz'];
 $score = $_GET['score'];
 
 include 'funkcja_quiz.php';
-
-if (!isset($_COOKIE['user_login'])) {
-    header('Location: ../logowanie.php');
-    exit(); 
-}
 
 $userAnswers = [];
 if (isset($_COOKIE['user_answers'])) {
@@ -27,7 +22,7 @@ if (isset($_COOKIE['user_answers'])) {
 <body>
     <header>
         <nav>
-            <?php include_once '../multi/navbar.html'?>
+            <?php include_once '../includes/navbar.html'?>
         </nav>
     </header>   
     <div class="answers">

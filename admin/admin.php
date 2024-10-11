@@ -1,10 +1,6 @@
 <?php 
-include '../multi/conn.php';
+include '../includes/conn.php';
 
-if (!isset($_COOKIE['user_login'])) {
-    header('Location: ../logowanie.php');
-    exit(); 
-}
 
 if (isset($_POST['delete'])) {
     $id = $_POST['id'];
@@ -15,31 +11,17 @@ if (isset($_POST['delete'])) {
 }
 
 if (isset($_POST['save'])) {
-    $id = $_POST['id'];
-    $pytanie = $_POST['pytanie']; 
-    $A = $_POST['A'];
-    $B = $_POST['B'];
-    $C = $_POST['C'];
-    $D = $_POST['D'];
-    $odp = $_POST['odp'];
-
+    include '../includes/variables.php';
  
     $sql = "UPDATE pytania SET zapytanie = '$pytanie', poprawna_odpowiedz = '$odp' WHERE id = $id";
     mysqli_query($conn, $sql);
-
 
     $sql = "UPDATE odpowiedz SET A = '$A', B = '$B', C = '$C', D = '$D' WHERE id = (SELECT odpowiedz_id FROM pytania WHERE id = $id)";
     mysqli_query($conn, $sql);
 }
 
 if (isset($_POST['add_question'])) {
-    $new_pytanie = $_POST['new_pytanie'];
-    $odp = $_POST['odp'];
-    $A = "A. ".$_POST['A'];
-    $B = "B. ".$_POST['B'];
-    $C = "C. ".$_POST['C'];
-    $D = "D. ".$_POST['D'];
-
+    include '../includes/variables.php';
     if(strlen($new_pytanie) > 10 && strlen($new_pytanie) < 255) {
         $sql4 = "INSERT INTO odpowiedz (A, B, C, D) VALUES ('$A', '$B', '$C', '$D')";
         if (mysqli_query($conn, $sql4)) {
@@ -67,7 +49,7 @@ mysqli_close($conn);
 <body>
     <header>
         <nav>
-            <?php include_once '../multi/navbar.html'?>
+            <?php include_once '../includes/navbar.html'?>
         </nav>
     </header>
     <div class="main">
@@ -118,7 +100,7 @@ mysqli_close($conn);
                     </form>
                 </tr>
                 <?php
-                require_once("funkcja.php");
+                include 'funkcja.php';
                 if (isset($_POST['edit'])) {
                     $editId = $_POST['id'];
                 } else {

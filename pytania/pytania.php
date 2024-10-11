@@ -1,10 +1,5 @@
 <?php 
-include '../multi/conn.php';
-
-    if (!isset($_COOKIE['user_login'])) {
-        header('Location: ../logowanie.php');
-        exit(); 
-    }
+include '../includes/conn.php';
 
     $sql = "SELECT ROW_NUMBER() OVER (ORDER BY poprawnosc ASC) as pozycja, poprawnosc, zapytanie, total FROM pytania WHERE poprawnosc != 0 ORDER BY poprawnosc ASC LIMIT 10";
     $q = mysqli_query($conn, $sql);
@@ -21,7 +16,7 @@ include '../multi/conn.php';
 <body>
     <header>
         <nav>
-            <?php include_once '../multi/navbar.html'?>
+            <?php include_once '../includes/navbar.html'?>
         </nav>
     </header>
     <div class="main">
@@ -34,27 +29,18 @@ include '../multi/conn.php';
                 </tr>
             </thead>
             <tbody>
-                <?php
-                    $results = []; 
-
-                    while ($row = mysqli_fetch_array($q)) {
-                        $row['Ratio'] = ($row['poprawnosc'] / $row['total']) * 100;
-                        $results[] = $row; 
-                    }
-
-                    $array = range(1, 10); 
-                    usort($results, function($a, $b) {
-                        return $a['Ratio'] <=> $b['Ratio']; 
-                    });
-
-                    foreach ($results as $index => $row) {
-                        $Ratio = number_format($row['Ratio'], 2) . "%"; 
-                        echo '<tr>';
-                        echo '<th scope="row">' . $array[$index] . '</th>'; 
-                        echo '<td>' . $Ratio . '</td>';
-                        echo '<td>' . $row['zapytanie'] . '</td>';
-                        echo '</tr>';
-                    }
+                <?php 
+                $results = [];
+                while ($row = mysqli_fetch_array($q)) {
+                    $row['Ratio'] = ($row['poprawnosc'] / $row['total']) * 100;
+                    $results[] = $row; 
+                }
+                $array = range(1, 10); 
+                usort($results, function($a, $b) {
+                    return $a['Ratio'] <=> $b['Ratio']; 
+                });
+                include '../includes/question_function.php';
+                oblicz_procent($results , $array)
                 ?>
             </tbody>
         </table>

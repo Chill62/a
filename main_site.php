@@ -1,13 +1,8 @@
 <?php 
 session_start();
 
-include './multi/conn.php';
+include './includes/conn.php';
 
-if (!isset($_COOKIE['user_login'])) {
-
-    header('Location: logowanie.php');
-    exit(); 
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,7 +15,7 @@ if (!isset($_COOKIE['user_login'])) {
 <body>
     <header>
         <nav>
-            <?php include_once './multi/navbar.html'?>
+            <?php include_once './includes/navbar.html'?>
         </nav>
     </header>
     <div class="middle">

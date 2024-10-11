@@ -26,7 +26,7 @@ function sendMail($email,$v_code)
 
         $mail->isHTML(true);                                  //Set email format to HTML
         $mail->Subject = 'Email verification';
-        $mail->Body    = "<a href='http://localhost/projekt/verify.php?email=$email&v_code=$v_code'>Verify</a>";
+        $mail->Body    = "<a href='http://localhost/projekt/PHPMailer/verify.php?email=$email&v_code=$v_code'>Verify</a>";
     
         $mail->send();
         return true;

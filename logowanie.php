@@ -19,7 +19,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             if (mysqli_num_rows($result) > 0) {
                 $user = mysqli_fetch_assoc($result);
-                if (password_verify($haslo, $user['haslo'])) {
+                if ($user['is_verified'] == 0) {
+                    $error = "Your account is not verified. Please check your email for the verification link.";
+                } elseif (password_verify($haslo, $user['haslo'])) {
                     $_SESSION['user_login'] = $user['login'];
                     setcookie('user_login', $login, time() + (86400 * 30), "/");    
                     header('Location: main_site.php');

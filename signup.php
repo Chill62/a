@@ -1,14 +1,14 @@
 <?php 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
- 
 
-require 'PHPMailer/mail.php';
+require 'PHPMailer/mail.php';   
 
 session_start();
 
 $conn = mysqli_connect('localhost', 'root', '', 'egzamin');
-  
+$green = '';
+$error = '';  // Initialize error variable
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['login'], $_POST['haslo'], $_POST['email'])) {
@@ -16,9 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $haslo = $_POST['haslo'];
         $email = $_POST['email'];
         $haslo2 = $_POST['haslo2'];
-        $v_code =bin2hex(random_bytes(16));
+        $v_code = bin2hex(random_bytes(16));
         $sprawdz = '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/';
-        $verification_code = substr(number_format(time() * rand(), 0,'',''),0,6);
+
         if (preg_match($sprawdz, $email)) {
             if (strlen($login) > 18 || strlen($haslo) > 18 || strlen($login) < 8 || strlen($haslo) < 8) {
                 $error = "Your login and password must be below 18 characters and above 8 characters.";
@@ -30,34 +30,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if (mysqli_num_rows($result) > 0) {
                     $error = "Użytkownik istnieje w bazie"; 
                 } else {
-                    $stmt = mysqli_prepare($conn, "SELECT email FROM logowanie WHERE email = ?");
-                    mysqli_stmt_bind_param($stmt, "s", $email);
-                    mysqli_stmt_execute($stmt);
-                    $result = mysqli_stmt_get_result($stmt);
-                    if (mysqli_num_rows($result) > 0) {
+                    $stmt_email = mysqli_prepare($conn, "SELECT email FROM logowanie WHERE email = ?");
+                    mysqli_stmt_bind_param($stmt_email, "s", $email);
+                    mysqli_stmt_execute($stmt_email);
+                    $result_email = mysqli_stmt_get_result($stmt_email);
+                    if (mysqli_num_rows($result_email) > 0) {
                         $error = "Email exists in database"; 
                     } else {
                         $haslo_hash = password_hash($haslo, PASSWORD_DEFAULT);
-                        $stmt = mysqli_prepare($conn, 'INSERT INTO logowanie (login, haslo, email, verification_code) VALUES (?, ?, ?,?)');        
-                        mysqli_stmt_bind_param($stmt, "ssss", $login, $haslo_hash, $email,$v_code);
-                        mysqli_stmt_execute($stmt);
-                        if($stmt && sendMail($email,$v_code))
-                        {
-                            $green = "email sent successfully";
+                        $stmt = mysqli_prepare($conn, 'INSERT INTO logowanie (login, haslo, email, verification_code) VALUES (?, ?, ?, ?)');
+                        mysqli_stmt_bind_param($stmt, "ssss", $login, $haslo_hash, $email, $v_code);
+                        if (mysqli_stmt_execute($stmt)) {
+                            if (sendMail($email, $v_code)) {
+                                $green = "Email sent successfully. Check your email for the verification link.";
+                            } else {
+                                $error = "Failed to send verification email.";
+                            }
                         }
                     }
                 }
             } else {
-                $error = "The passwords do not match";
+                $error = "The passwords do not match.";
             }
         } else {
-            $error = "Your email is invalid";
-            if(!isset($error))
-            {
-                echo $green;
-            }
+            $error = "Your email is invalid.";
         }
-        
     }
 }
 mysqli_close($conn);
@@ -90,8 +87,11 @@ mysqli_close($conn);
             </div>
         </form>
         <?php 
-        if (isset($error)) {
+        if (isset($error) && $error != '') {
             echo "<div class='error'>".$error."</div>";
+        }
+        if ($green != '') {
+            echo "<div class='green'>".$green."</div>";
         }
         ?>
     </div>

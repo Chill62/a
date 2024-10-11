@@ -71,3 +71,10 @@ a {
     text-align: center;
     max-width: 30ch;
 }
+.green {
+    color: green;
+    margin-top: 20px;
+    word-wrap: break-word; 
+    text-align: center;
+    max-width: 30ch;
+}

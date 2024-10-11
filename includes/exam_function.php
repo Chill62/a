@@ -6,23 +6,23 @@
     }
     function display_questions($question)
     {
-        $ABCD = array('A','B','C','D');
+        $ABCD = array('A', 'B', 'C', 'D');
         $question_title = $question['zapytanie'];
         echo "
             <div class='quiz'>
                 <fieldset>
-                    <legend>". htmlspecialchars($question_title) . "</legend>";
-            foreach($ABCD as $LETTER)
-            {   
-                echo " <div class='options'>
-                            <label>
-                                <input type='radio' name='question_'".$question['id']."' value='$LETTER'>
-                                ". htmlspecialchars($question[$LETTER]) ."
-                            </label>
-                        </div>";
-            }
-            echo "</fieldset>";
-            echo "</div>";
+                    <legend>" . htmlspecialchars($question_title) . "</legend>";
+        foreach ($ABCD as $LETTER) {
+            echo " <div class='options'>
+                        <label>
+                            <input type='radio' name='question_" . $question['id'] . "' value='$LETTER'>
+                            " . htmlspecialchars($question[$LETTER]) . "
+                        </label>
+                    </div>";
+        }
+        echo "</fieldset>";
+        echo "</div>";
     }
+
     ?>
 

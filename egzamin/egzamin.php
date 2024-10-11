@@ -80,33 +80,12 @@ mysqli_close($conn);
     <main>
         <form method="POST">
             <?php 
-            foreach ($_SESSION['quiz'] as $question):
-                $questionId = $question['id']; 
-            ?>
-            <div class="quiz">
-                <fieldset>
-                    <legend><?php echo htmlspecialchars($question['zapytanie']); ?></legend>
-                    <div class="options">
-                        <label>
-                            <input type="radio" name="question_<?php echo $question['id']; ?>" value="A">
-                            <?php echo htmlspecialchars($question['A']); ?>
-                        </label>
-                        <label>
-                            <input type="radio" name="question_<?php echo $question['id']; ?>" value="B">
-                            <?php echo htmlspecialchars($question['B']); ?>
-                        </label>
-                        <label>
-                            <input type="radio" name="question_<?php echo $question['id']; ?>" value="C">
-                            <?php echo htmlspecialchars($question['C']); ?>
-                        </label>
-                        <label>
-                            <input type="radio" name="question_<?php echo $question['id']; ?>" value="D">
-                            <?php echo htmlspecialchars($question['D']); ?>
-                        </label>
-                    </div>
-                </fieldset>
-            </div>
-            <?php endforeach; ?>    
+                include '../includes/exam_function.php';
+                foreach ($_SESSION['quiz'] as $question):
+                        $questionId = $question['id']; 
+                        display_questions($question);
+                endforeach; 
+            ?>    
             <div class="button">
                 <button type="submit" class="submit" name="przycisk">Check answers</button><br>
             </div>

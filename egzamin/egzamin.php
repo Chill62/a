@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-$conn = mysqli_connect('localhost', 'root', '', 'egzamin');
+include '../multi/conn.php';
 
 if (!isset($_COOKIE['user_login'])) {
     session_destroy();
@@ -79,12 +79,7 @@ mysqli_close($conn);
 <body>
     <header>
         <nav>
-            <div class="link-container">
-                <div class="link"><a href="../main_site.php">Main site</a></div>
-                <div class="link"><a href="../pytania/pytania.php">Hardest questions</a></div>
-                <div class="link"><a href="../egzamin/egzamin.php">Exam</a></div>
-                <div class="link"><a href="../admin/admin.php">Admin panel</a></div>
-            </div>
+            <?php include_once '../multi/navbar.html'?>
         </nav>
     </header>
     <main>

@@ -1,5 +1,5 @@
 <?php 
-    $conn = mysqli_connect('localhost', 'root', '', 'egzamin');
+include '../multi/conn.php';
 
     if (!isset($_COOKIE['user_login'])) {
         header('Location: ../logowanie.php');
@@ -21,12 +21,7 @@
 <body>
     <header>
         <nav>
-            <div class="link-container1">
-                <div class="link1"><a href="../main_site.php">Main site</a></div>
-                <div class="link1"><a href="../pytania/pytania.php">Hardest questions</a></div>
-                <div class="link1"><a href="../egzamin/egzamin.php">Exam</a></div>
-                <div class="link1"><a href="pytania.php">Admin panel</a></div>
-            </div>
+            <?php include_once '../multi/navbar.html'?>
         </nav>
     </header>
     <div class="main">

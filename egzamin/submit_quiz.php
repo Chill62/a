@@ -1,9 +1,11 @@
 <?php
 session_start();
-$conn = mysqli_connect('localhost', 'root', '', 'egzamin');
+include '../multi/conn.php';
 
 $quiz = $_SESSION['quiz'];
 $score = $_GET['score'];
+
+include 'funkcja_quiz.php';
 
 if (!isset($_COOKIE['user_login'])) {
     header('Location: ../logowanie.php');
@@ -25,14 +27,9 @@ if (isset($_COOKIE['user_answers'])) {
 <body>
     <header>
         <nav>
-            <div class="link-container">
-                <div class="link"><a href="../main_site.php">Main site</a></div>
-                <div class="link"><a href="../pytania/pytania.php">Hardest questions</a></div>
-                <div class="link"><a href="../egzamin/egzamin.php">Exam</a></div>
-                <div class="link"><a href="../admin/admin.php">Admin panel</a></div>
-            </div>
+            <?php include_once '../multi/navbar.html'?>
         </nav>
-    </header>
+    </header>   
     <div class="answers">
         <div class="h">
             <h1><b>EE.09 / INF.03 / E.14</b> - Test results</h1>
@@ -56,66 +53,10 @@ if (isset($_COOKIE['user_answers'])) {
                     <fieldset>
                         <legend><?php echo htmlspecialchars($question['zapytanie']); ?></legend>
                         <div class="user_answer"><?php 
-                        if (isset($selectedAnswer)) {
-                            if($selectedAnswer != $correctAnswer) {
-                            echo "<div style='color:red'Wybrałeś złą odpowiedź - $selectedAnswer</div>";                                
-                            }elseif ($selectedAnswer != null && $selectedAnswer == $correctAnswer) {
-                                echo "<div style='color:green'>Wybrałeś dobrą odpowiedź - $selectedAnswer</div>";
-                            }
-                            if($selectedAnswer == null)
-                            {
-                                echo "<div style='color:blue'>Nie wybrałeś odpowiedzi</div>";
-                            }
-                        }        
-                        
-
+                        _collor($selectedAnswer,$correctAnswer);
+                        Oblicz($correctAnswer , $selectedAnswer,$question); 
                          ?>
-                        <div class="options">
-                            <label <?php 
-                                if ($correctAnswer == 'A') {
-                                    echo 'class="green"';
-                                } elseif ($selectedAnswer == 'A') {
-                                    echo 'class="red"';
-                                }else {
-                                    echo 'class=not';
-                                }
-                            ?>>
-                                <?php echo htmlspecialchars($question['A']); ?>
-                            </label>
-                            <label <?php 
-                                if ($correctAnswer == 'B') {
-                                    echo 'class="green"';
-                                } elseif ($selectedAnswer == 'B') {
-                                    echo 'class="red"';
-                                }else {
-                                    echo 'class=not';
-                                }
-                            ?>>
-                                <?php echo htmlspecialchars($question['B']); ?>
-                            </label>
-                            <label <?php 
-                                if ($correctAnswer == 'C') {
-                                    echo 'class="green"';
-                                } elseif ($selectedAnswer == 'C') {
-                                    echo 'class="red"';
-                                }else {
-                                    echo 'class=not';
-                                }
-                            ?>>
-                                <?php echo htmlspecialchars($question['C']); ?>
-                            </label>
-                            <label <?php 
-                                if ($correctAnswer == 'D') {
-                                    echo 'class="green"';
-                                } elseif ($selectedAnswer == 'D') {
-                                    echo 'class="red"';
-                                }else {
-                                    echo 'class=not';
-                                }
-                            ?>>
-                                <?php echo htmlspecialchars($question['D']); ?>
-                            </label>
-                        </div>
+                        
                     </fieldset>
                 </div>
                 <?php endforeach; ?>

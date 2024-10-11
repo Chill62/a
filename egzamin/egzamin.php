@@ -4,8 +4,8 @@ session_start();
 $conn = mysqli_connect('localhost', 'root', '', 'egzamin');
 
 if (!isset($_COOKIE['user_login'])) {
-    header('Location: ../logowanie.php');
     session_destroy();
+    header('Location: ../logowanie.php');
     exit(); 
 }
 if(isset($_POST['reset'])) {
